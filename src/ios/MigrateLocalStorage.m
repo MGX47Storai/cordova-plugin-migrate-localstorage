@@ -152,7 +152,7 @@
     BOOL lsResult = [self migrateLocalStorage];
     BOOL idbResult = [self migrateIndexedDB];
     if (lsResult && idbResult) {
-        if all successfully migrated, do some cleanup!
+        // if all successfully migrated, do some cleanup!
         NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString* originalFolder = [appLibraryFolder stringByAppendingPathComponent:ORIG_FOLDER];
         BOOL res = [self deleteFile:originalFolder];
