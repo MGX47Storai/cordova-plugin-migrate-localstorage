@@ -79,7 +79,8 @@
     NSString* original;
 
     NSString* originalLSFilePath = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
-
+    NSLog(@"%@ 📦 appLibraryDIR %@", TAG, appLibraryFolder);
+    NSLog(@"%@ 📦 originalLSFileDirPath %@", TAG, originalLSFilePath);
     if ([[NSFileManager defaultManager] fileExistsAtPath:originalLSFilePath]) {
         original = originalLSFilePath;
     } else {
@@ -101,6 +102,7 @@
     
         NSLog(@"%@ 🎮 I am a simulator", TAG);
         NSString* bundleIdentifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+        NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
         bundleIdentifier = [@"/" stringByAppendingString:bundleIdentifier];
             
         NSMutableString* targetMutable = [NSMutableString stringWithString:target];
