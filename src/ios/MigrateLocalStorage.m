@@ -8,12 +8,8 @@
 
 #define TAG @"\nMigrateLS"
 
-#define ORIG_FOLDER @"WebKit/LocalStorage"
-#define ORIG_LS_FILEPATH @"WebKit/LocalStorage/file__0.localstorage"
-#define ORIG_LS_CACHE @"Caches/file__0.localstorage"
-// #define TARGET_LS_FILEPATH @"WebsiteData/LocalStorage/file__0.localstorage" // original cordova file
-//#define TARGET_LS_FILEPATH @"WebKit/WebsiteData/LocalStorage/http_localhost_8080.localstorage"
-#define TARGET_LS_FILEPATH @"WebKit/WebsiteData/LocalStorage/app_localhost_0.localstorage"
+#define ORIG_LS_FILEPATH @"WebKit/WebsiteData/LocalStorage/file__0.localstorage"
+#define TARGET_LS_FILEPATH @"WebKit/WebsiteData/LocalStorage/app_mobilezuz_0.localstorage"
 
 @implementation MigrateLocalStorage
 
@@ -76,16 +72,26 @@
 - (NSString*) resolveOriginalLSFile
 {
     NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString* original;
+    NSString* original = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
+    NSLog(@"%@ 📦 appLibraryFolder %@", TAG, appLibraryFolder);
+    NSLog(@"%@ 📦 original %@", TAG, original);
 
-    NSString* originalLSFilePath = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
-    NSLog(@"%@ 📦 appLibraryDIR %@", TAG, appLibraryFolder);
-    NSLog(@"%@ 📦 originalLSFileDirPath %@", TAG, originalLSFilePath);
-    if ([[NSFileManager defaultManager] fileExistsAtPath:originalLSFilePath]) {
-        original = originalLSFilePath;
-    } else {
-        original = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_CACHE];
-    }
+    #if TARGET_IPHONE_SIMULATOR
+        // the simulator squeezes the bundle id into the path
+        NSLog(@"%@ 🎮 I am a simulator", TAG);
+        NSString* bundleIdentifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+        NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
+        bundleIdentifier = [@"/" stringByAppendingString:bundleIdentifier];
+            
+        NSMutableString* originalMutable = [NSMutableString stringWithString:original];
+        NSRange range = [originalMutable rangeOfString:@"WebKit"];
+        long idx = range.location + range.length;
+        [originalMutable insertString:bundleIdentifier atIndex:idx];
+    
+        return originalMutable;
+
+    #endif
+    
     return original;
 }
 
@@ -155,7 +161,7 @@
     if (lsResult) {
         // if all successfully migrated, do some cleanup!
         NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSString* originalFolder = [appLibraryFolder stringByAppendingPathComponent:ORIG_FOLDER];
+        NSString* originalFolder = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
         BOOL res = [self deleteFile:originalFolder];
         NSLog(@"%@ final deletion res %d", TAG, res);
     }
