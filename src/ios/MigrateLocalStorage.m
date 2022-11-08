@@ -162,6 +162,7 @@
         // if all successfully migrated, do some cleanup!
         NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString* originalFolder = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
+        NSLog(@"%@ 📦 originalFolder %@", TAG, originalFolder);
         BOOL res = [self deleteFile:originalFolder];
         NSLog(@"%@ final deletion res %d", TAG, res);
     }
