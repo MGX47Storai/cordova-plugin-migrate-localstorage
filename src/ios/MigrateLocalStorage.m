@@ -24,7 +24,7 @@
 
     // Bail out if source file does not exist // not really necessary <- error case already handle by fileManager copyItemAtPath
     if (![fileManager fileExistsAtPath:path]) {
-        NSLog(@"%@ Source file does not exist", TAG);
+        //NSLog(@"%@ Source file does not exist", TAG);
         return NO;
     }
 
@@ -41,19 +41,19 @@
 
     // Bail out if source file does not exist // not really necessary <- error case already handle by fileManager copyItemAtPath
     if (![fileManager fileExistsAtPath:src]) {
-        NSLog(@"%@ Source file does not exist", TAG);
+        //NSLog(@"%@ Source file does not exist", TAG);
         return NO;
     }
 
     // Bail out if dest file exists
     if ([fileManager fileExistsAtPath:dest]) { // not really necessary <- error case already handle by fileManager copyItemAtPath
-        NSLog(@"%@ Target file exists", TAG);
+        //NSLog(@"%@ Target file exists", TAG);
         return NO;
     }
 
     // create path to dest
     if (![fileManager createDirectoryAtPath:[dest stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil]) {
-        NSLog(@"%@ error creating target file", TAG);
+        //NSLog(@"%@ error creating target file", TAG);
         return NO;
     }
 
@@ -73,14 +73,15 @@
 {
     NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString* original = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
-    NSLog(@"%@ 📦 appLibraryFolder %@", TAG, appLibraryFolder);
-    NSLog(@"%@ 📦 original %@", TAG, original);
+    
+    //NSLog(@"%@ 📦 appLibraryFolder %@", TAG, appLibraryFolder);
+    //NSLog(@"%@ 📦 original %@", TAG, original);
 
     #if TARGET_IPHONE_SIMULATOR
         // the simulator squeezes the bundle id into the path
-        NSLog(@"%@ 🎮 I am a simulator", TAG);
+        //NSLog(@"%@ 🎮 I am a simulator", TAG);
         NSString* bundleIdentifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-        NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
+        //NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
         bundleIdentifier = [@"/" stringByAppendingString:bundleIdentifier];
             
         NSMutableString* originalMutable = [NSMutableString stringWithString:original];
@@ -106,9 +107,9 @@
     #if TARGET_IPHONE_SIMULATOR
         // the simulator squeezes the bundle id into the path
     
-        NSLog(@"%@ 🎮 I am a simulator", TAG);
+        //NSLog(@"%@ 🎮 I am a simulator", TAG);
         NSString* bundleIdentifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-        NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
+        //NSLog(@"%@ 📦 bundleIdentifierString %@", TAG, bundleIdentifier);
         bundleIdentifier = [@"/" stringByAppendingString:bundleIdentifier];
             
         NSMutableString* targetMutable = [NSMutableString stringWithString:target];
@@ -132,22 +133,22 @@
     // Migrate UIWebView local storage files to WKWebView. 
 
     NSString* original = [self resolveOriginalLSFile];
-    NSLog(@"%@ 📦 original %@", TAG, original);
+    //NSLog(@"%@ 📦 original %@", TAG, original);
 
     NSString* target = [self resolveTargetLSFile];
-    NSLog(@"%@ 🏹 target %@", TAG, target);
+    //NSLog(@"%@ 🏹 target %@", TAG, target);
 
     // Only copy data if no existing localstorage data exists yet for wkwebview
     if (![[NSFileManager defaultManager] fileExistsAtPath:target]) {
-        NSLog(@"%@ 🕐 No existing localstorage data found for WKWebView. Migrating data from UIWebView", TAG);
+        //NSLog(@"%@ 🕐 No existing localstorage data found for WKWebView. Migrating data from UIWebView", TAG);
         BOOL success1 = [self move:original to:target];
         BOOL success2 = [self move:[original stringByAppendingString:@"-shm"] to:[target stringByAppendingString:@"-shm"]];
         BOOL success3 = [self move:[original stringByAppendingString:@"-wal"] to:[target stringByAppendingString:@"-wal"]];
-        NSLog(@"%@ copy status %d %d %d", TAG, success1, success2, success3);
+        //NSLog(@"%@ copy status %d %d %d", TAG, success1, success2, success3);
         return success1 && success2 && success3;
     }
     else {
-        NSLog(@"%@ ⚪️ found LS data. not migrating", TAG);
+        //NSLog(@"%@ ⚪️ found LS data. not migrating", TAG);
         return NO;
     }
 }
@@ -162,9 +163,9 @@
         // if all successfully migrated, do some cleanup!
         NSString* appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
         NSString* originalFolder = [appLibraryFolder stringByAppendingPathComponent:ORIG_LS_FILEPATH];
-        NSLog(@"%@ 📦 originalFolder %@", TAG, originalFolder);
+        //NSLog(@"%@ 📦 originalFolder %@", TAG, originalFolder);
         BOOL res = [self deleteFile:originalFolder];
-        NSLog(@"%@ final deletion res %d", TAG, res);
+        //NSLog(@"%@ final deletion res %d", TAG, res);
     }
 }
 
